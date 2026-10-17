@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChickenMart - Poultry E-Commerce</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+<style>
+:root{
+    --primary:#c41e3a;
+    --primary-dark:#9b162e;
+    --accent:#f5c600;
+}
+
+body{
+    font-family:"Segoe UI",system-ui,-apple-system,sans-serif;
+}
+
+.hero{
+    background:linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.55)),url('chickens-farms.jpg');
+    background-size:cover;
+    background-position:center;
+    height:420px;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+}
+
+.hero h1{
+    font-size:2.75rem;
+    font-weight:800;
+    letter-spacing:1px;
+}
+
+.hero p{
+    font-size:1.25rem;
+    opacity:0.95;
+}
+
+.navbar-brand{
+    font-weight:800;
+    font-size:1.5rem;
+    color:var(--accent)!important;
+}
+
+.navbar-brand i{
+    color:var(--accent);
+}
+
+.card img{
+    height:220px;
+    object-fit:cover;
+}
+
+.card{
+    transition:transform 0.2s,box-shadow 0.2s;
+    border:none;
+    border-radius:12px;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 12px 24px rgba(0,0,0,0.12);
+}
+
+.card h5{
+    font-weight:700;
+}
+
+.badge-pill{
+    font-size:0.75rem;
+    padding:0.45em 0.75em;
+}
+
+.section-title{
+    font-weight:800;
+    letter-spacing:0.5px;
+}
+
+.category-card{
+    height:100%;
+    border-radius:12px;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+}
+
+.category-card img{
+    height:180px;
+    object-fit:cover;
+    width:100%;
+}
+
+.category-card .card-body{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+}
+
+.stats .stat-card{
+    background:var(--primary);
+    color:white;
+    border-radius:12px;
+    padding:20px;
+    text-align:center;
+}
+
+.stats .stat-number{
+    font-size:2rem;
+    font-weight:800;
+    display:block;
+}
+
+.stats .stat-label{
+    font-size:0.9rem;
+    opacity:0.9;
+}
+
+.availability-badge{
+    font-weight:700;
+}
+
+footer{
+    background:#212529;
+    color:white;
+    padding:30px 20px;
+    margin-top:60px;
+}
+
+footer a{
+    color:var(--accent);
+    text-decoration:none;
+}
+
+footer a:hover{
+    text-decoration:underline;
+}
+
+.btn-primary{
+    background:var(--primary);
+    border-color:var(--primary);
+}
+
+.btn-primary:hover{
+    background:var(--primary-dark);
+    border-color:var(--primary-dark);
+}
+
+.btn-outline-danger:hover{
+    background:var(--primary);
+    color:white;
+    border-color:var(--primary);
+}
+
+.table th{
+    font-weight:700;
+    color:var(--primary);
+}
+
+#emptyState{
+    display:none;
+}
+
+.toast-container{
+    z-index:1055;
+}
+
+.modal-content{
+    border-radius:12px;
+}
+
+.detail-label{
+    color:#6c757d;
+    font-size:0.85rem;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+}
+
+@media (max-width:576px){
+    .hero h1{
+        font-size:2rem;
+    }
+    .hero p{
+        font-size:1rem;
+    }
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+<div class="container">
+<a class="navbar-brand" href="#home"><i class="fa-solid fa-chicken me-2"></i>ChickenMart</a>
+
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Toggle navigation">
+<span class="navbar-toggler-icon"></span>
+</button>
+
+<div class="collapse navbar-collapse" id="menu">
+<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+<li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+<li class="nav-item"><a class="nav-link" href="#categories">Categories</a></li>
+<li class="nav-item"><a class="nav-link" href="#products">Products</a></li>
+<li class="nav-item"><a class="nav-link" href="#admin">Admin</a></li>
+</ul>
+</div>
+</div>
+</nav>
+
+<section class="hero" id="home">
+<div class="container position-relative z-3">
+<h1>Welcome to ChickenMart</h1>
+<p class="mb-4">Healthy, Quality Chickens for Every Farm</p>
+<a href="#products" class="btn btn-light px-4 py-2 fw-bold">Browse Chickens</a>
+<a href="#admin" class="btn btn-outline-light px-4 py-2 fw-bold ms-2">Admin Dashboard</a>
+</div>
+</section>
+
+<section class="container my-5">
+<div class="row g-4 mb-5">
+<div class="col-md-4">
+<div class="stat-card">
+<span class="stat-number" id="statTotal">0</span>
+<span class="stat-label">Total Listings</span>
+</div>
+</div>
+<div class="col-md-4">
+<div class="stat-card bg-dark">
+<span class="stat-number" id="statAvailable">0</span>
+<span class="stat-label">Available</span>
+</div>
+</div>
+<div class="col-md-4">
+<div class="stat-card bg-warning text-dark">
+<span class="stat-number" id="statOut">0</span>
+<span class="stat-label">Out of Stock</span>
+</div>
+</div>
+</div>
+</section>
+
+<section class="container my-5" id="categories">
+<h2 class="section-title text-center mb-4">Chicken Categories</h2>
+<p class="text-center text-muted mb-5">Organized by age to match your farm's needs.</p>
+
+<div class="row g-4">
+<div class="col-md-4">
+<div class="card category-card h-100">
+<img src="chickens farm.jpg" alt="4-Month Chickens" class="card-img-top">
+<div class="card-body d-flex flex-column">
+<h5 class="card-title fw-bold mb-2">4-Month Chickens</h5>
+<p class="card-text flex-grow-1">Young chickens ready for growing farms. Ideal for early-stage development.</p>
+<a href="#products?cat=4-month" class="btn btn-outline-primary mt-auto">View 4-Month</a>
+</div>
+</div>
+</div>
+
+<div class="col-md-4">
+<div class="card category-card h-100">
+<img src="chickens-farms.jpg" alt="5-Month Chickens" class="card-img-top">
+<div class="card-body d-flex flex-column">
+<h5 class="card-title fw-bold mb-2">5-Month Chickens</h5>
+<p class="card-text flex-grow-1">Near laying and breeding maturity. Excellent for egg production.</p>
+<a href="#products?cat=5-month" class="btn btn-outline-primary mt-auto">View 5-Month</a>
+</div>
+</div>
+</div>
+
+<div class="col-md-4">
+<div class="card category-card h-100">
+<img src="chickns2.jpg" alt="6 Months &amp; Older" class="card-img-top">
+<div class="card-body d-flex flex-column">
+<h5 class="card-title fw-bold mb-2">6 Months &amp; Older</h5>
+<p class="card-text flex-grow-1">Fully mature chickens ready for meat and breeding.</p>
+<a href="#products?cat=6-month" class="btn btn-outline-primary mt-auto">View Mature</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="container my-5" id="products">
+<h2 class="section-title text-center mb-2">Available Chickens</h2>
+<p class="text-center text-muted mb-5">Browse our poultry listings below.</p>
+
+<div class="text-center mb-4" id="filterPills">
+<button class="btn btn-sm btn-outline-primary filter-btn active" data-filter="all">All</button>
+<button class="btn btn-sm btn-outline-primary filter-btn" data-filter="4-month">4 Months</button>
+<button class="btn btn-sm btn-outline-primary filter-btn" data-filter="5-month">5 Months</button>
+<button class="btn btn-sm btn-outline-primary filter-btn" data-filter="6-month">6 Months+</button>
+</div>
+
+<div class="row g-4" id="productContainer">
+</div>
+
+<div id="emptyState" class="text-center py-5">
+<i class="fa fa-box-open text-muted fa-3x mb-3"></i>
+<p class="text-muted">No chickens found in this category.</p>
+</div>
+</section>
+
+<section class="container my-5" id="admin">
+<h2 class="section-title text-center mb-4">Admin Dashboard</h2>
+<p class="text-center text-muted mb-4">Add, edit, categorize, and manage chicken listings, prices, and inventory.</p>
+
+<div class="card mb-5">
+<div class="card-body">
+<h5 class="card-title fw-bold mb-4">Add / Edit Chicken</h5>
+<form id="chickenForm" novalidate>
+<input type="hidden" id="editId">
+
+<div class="row g-3">
+<div class="col-md-4">
+<label class="form-label fw-bold">Chicken Name</label>
+<input type="text" id="name" class="form-control" placeholder="e.g. Native Chicken" required>
+<div class="invalid-feedback">Please enter a chicken name.</div>
+</div>
+
+<div class="col-md-4">
+<label class="form-label fw-bold">Breed</label>
+<input type="text" id="breed" class="form-control" placeholder="e.g. Native Breed" required>
+<div class="invalid-feedback">Please enter a breed.</div>
+</div>
+
+<div class="col-md-4">
+<label class="form-label fw-bold">Age Category</label>
+<select id="category" class="form-select" required>
+<option value="">Select age group</option>
+<option value="4-month">4-Month Chickens</option>
+<option value="5-month">5-Month Chickens</option>
+<option value="6-month">6 Months &amp; Older</option>
+</select>
+<div class="invalid-feedback">Please select an age category.</div>
+</div>
+
+<div class="col-md-3">
+<label class="form-label fw-bold">Specific Age</label>
+<input type="text" id="age" class="form-control" placeholder="e.g. 6 Months" required>
+<div class="invalid-feedback">Please enter the specific age.</div>
+</div>
+
+<div class="col-md-3">
+<label class="form-label fw-bold">Price (₱)</label>
+<input type="number" id="price" class="form-control" placeholder="0.00" min="0" step="0.01" required>
+<div class="invalid-feedback">Please enter a valid price.</div>
+</div>
+
+<div class="col-md-6">
+<label class="form-label fw-bold">Availability</label>
+<select id="availability" class="form-select">
+<option value="Available">Available</option>
+<option value="Out of Stock">Out of Stock</option>
+</select>
+</div>
+
+<div class="col-md-6">
+<label class="form-label fw-bold">Image URL</label>
+<input type="url" id="image" class="form-control" placeholder="https://example.com/image.jpg">
+</div>
+
+<div class="col-12">
+<label class="form-label fw-bold">Description</label>
+<textarea id="description" class="form-control" rows="3" placeholder="Describe the chicken..." required></textarea>
+<div class="invalid-feedback">Please enter a description.</div>
+</div>
+</div>
+
+<div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+<button type="button" class="btn btn-outline-secondary me-2" id="resetFormBtn" style="display:none;">Reset</button>
+<button type="submit" class="btn btn-primary">Save Chicken</button>
+</div>
+</form>
+</div>
+</div>
+
+<div class="card">
+<div class="card-body">
+<h5 class="card-title fw-bold mb-3">Manage Listings</h5>
+<div class="table-responsive">
+<table class="table table-bordered align-middle" id="adminTable">
+<thead class="table-light">
+<tr>
+<th>Image</th>
+<th>Name</th>
+<th>Breed</th>
+<th>Category</th>
+<th>Age</th>
+<th>Price</th>
+<th>Availability</th>
+<th class="text-end">Actions</th>
+</tr>
+</thead>
+<tbody id="adminTableBody">
+</tbody>
+</table>
+</div>
+<div id="adminEmpty" class="text-center py-4 text-muted" style="display:none;">
+<p>No listings yet. Add your first chicken above.</p>
+</div>
+</div>
+</div>
+</section>
+
+<footer class="text-center">
+<p class="mb-1"><strong>ChickenMart &copy; 2026</strong></p>
+<p class="mb-0">Contact: 09123456789 | Poultry E-Commerce Specializing in Chickens</p>
+</footer>
+
+<div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title" id="detailModalLabel">Chicken Details</h5>
+<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body" id="details">
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+</div>
+</div>
+</div>
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+<div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+<div class="toast-header">
+<strong class="me-auto">ChickenMart</strong>
+<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+</div>
+<div class="toast-body" id="toastBody"></div>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+const STORAGE_KEY = 'chickmart_products_v1';
+
+const defaultProducts = [
+{
+id: 1,
+name: 'Native Chicken',
+breed: 'Native Breed',
+category: '6-month',
+age: '6 Months',
+price: 550,
+availability: 'Available',
+image: 'chickens farm.jpg',
+description: 'Healthy native chicken suitable for meat and breeding. Fully mature and hardy.'
+},
+{
+id: 2,
+name: 'Rhode Island Red',
+breed: 'Rhode Island Red',
+category: '5-month',
+age: '5 Months',
+price: 600,
+availability: 'Available',
+image: 'images (3).jpg',
+description: 'Excellent egg-producing breed known for hardiness and consistent lay.'
+},
+{
+id: 3,
+name: 'White Leghorn',
+breed: 'White Leghorn',
+category: '4-month',
+age: '4 Months',
+price: 500,
+availability: 'Available',
+image: 'white leeghorn.jpg',
+description: 'Fast growing breed with high productivity and excellent feed conversion.'
+},
+{
+id: 4,
+name: 'Plymouth Rock',
+breed: 'Plymouth Rock',
+category: '5-month',
+age: '5 Months',
+price: 580,
+availability: 'Available',
+image: 'images (4).jpg',
+description: 'Dual-purpose breed great for both meat and egg production.'
+},
+{
+id: 5,
+name: 'Sussex',
+breed: 'Sussex',
+category: '6-month',
+age: '6 Months',
+price: 620,
+availability: 'Out of Stock',
+image: 'images (5).jpg',
+description: 'Fully mature dual-purpose chicken with calm temperament.'
+},
+{
+id: 6,
+name: 'Orpington',
+breed: 'Orpington',
+category: '4-month',
+age: '4 Months',
+price: 540,
+availability: 'Available',
+image: 'images (6).jpg',
+description: 'Friendly, cold-hardy breed good for small farms and families.'
+}
+];
+
+let products = JSON.parse(localStorage.getItem(STORAGE_KEY));
+if(!products || products.length === 0){
+products = defaultProducts;
+saveProducts();
+}
+
+const productContainer = document.getElementById('productContainer');
+const emptyState = document.getElementById('emptyState');
+const filterBtns = document.querySelectorAll('.filter-btn');
+const adminTableBody = document.getElementById('adminTableBody');
+const adminEmpty = document.getElementById('adminEmpty');
+const chickenForm = document.getElementById('chickenForm');
+const resetFormBtn = document.getElementById('resetFormBtn');
+
+let currentFilter = 'all';
+let editModeId = null;
+
+function saveProducts(){
+localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
+renderProducts();
+renderAdmin();
+updateStats();
+}
+
+function categoryLabel(cat){
+switch(cat){
+case '4-month': return '4-Month Chickens';
+case '5-month': return '5-Month Chickens';
+case '6-month': return '6 Months &amp; Older';
+default: return cat;
+}
+}
+
+function escapeHtml(text){
+const div = document.createElement('div');
+div.textContent = text;
+return div.innerHTML;
+}
+
+function renderProducts(){
+let filtered = products;
+if(currentFilter !== 'all'){
+filtered = products.filter(p => p.category === currentFilter);
+}
+
+productContainer.innerHTML = '';
+
+if(filtered.length === 0){
+emptyState.style.display = 'block';
+return;
+}
+emptyState.style.display = 'none';
+
+filtered.forEach(p => {
+const imgSrc = p.image ? escapeHtml(p.image) : 'https://via.placeholder.com/600x400?text=Chicken';
+const price = Number(p.price || 0).toLocaleString('en-PH', {style:'currency', currency:'PHP'});
+const availClass = p.availability === 'Available' ? 'bg-success text-white' : 'bg-danger text-white';
+
+const card = `
+<div class="col-md-4 mb-4">
+<div class="card h-100">
+<img src="${imgSrc}" class="card-img-top" alt="${escapeHtml(p.name)}" onerror="this.src='https://via.placeholder.com/600x400?text=Chicken'">
+<div class="card-body d-flex flex-column">
+<h5 class="card-title fw-bold">${escapeHtml(p.name)}</h5>
+<p><span class="detail-label">Breed:</span> ${escapeHtml(p.breed)}</p>
+<p><span class="detail-label">Age:</span> ${escapeHtml(p.age)}</p>
+<p><span class="detail-label">Price:</span> <strong>${price}</strong></p>
+<span class="badge ${availClass} mb-3">${escapeHtml(p.availability)}</span>
+<button class="btn btn-primary w-100" onclick="openDetails(${p.id})">View Details</button>
+</div>
+</div>
+</div>
+`;
+productContainer.innerHTML += card;
+});
+}
+
+function renderAdmin(){
+adminTableBody.innerHTML = '';
+
+if(products.length === 0){
+adminEmpty.style.display = 'block';
+return;
+}
+adminEmpty.style.display = 'none';
+
+products.forEach(p => {
+const price = Number(p.price || 0).toLocaleString('en-PH', {style:'currency', currency:'PHP'});
+const availClass = p.availability === 'Available' ? 'text-success fw-bold' : 'text-danger fw-bold';
+const imgSrc = p.image ? escapeHtml(p.image) : 'https://via.placeholder.com/50x50?text=IMG';
+
+const row = `
+<tr>
+<td><img src="${imgSrc}" width="50" height="50" class="rounded" alt="${escapeHtml(p.name)}" onerror="this.src='https://via.placeholder.com/50x50?text=IMG'"></td>
+<td><strong>${escapeHtml(p.name)}</strong></td>
+<td>${escapeHtml(p.breed)}</td>
+<td><span class="badge bg-light text-dark border">${categoryLabel(p.category)}</span></td>
+<td>${escapeHtml(p.age)}</td>
+<td>${price}</td>
+<td><span class="${availClass}">${escapeHtml(p.availability)}</span></td>
+<td class="text-end">
+<button class="btn btn-sm btn-outline-primary me-1" onclick="editProduct(${p.id})" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+<button class="btn btn-sm btn-outline-danger" onclick="deleteProduct(${p.id})" title="Delete"><i class="fa-solid fa-trash"></i></button>
+</td>
+</tr>
+`;
+adminTableBody.innerHTML += row;
+});
+}
+
+function updateStats(){
+const total = products.length;
+const available = products.filter(p => p.availability === 'Available').length;
+const out = total - available;
+document.getElementById('statTotal').textContent = total;
+document.getElementById('statAvailable').textContent = available;
+document.getElementById('statOut').textContent = out;
+}
+
+filterBtns.forEach(btn => {
+btn.addEventListener('click', ()=>{
+filterBtns.forEach(b => b.classList.remove('active'));
+btn.classList.add('active');
+currentFilter = btn.getAttribute('data-filter');
+renderProducts();
+});
+});
+
+window.openDetails = function(id){
+const p = products.find(x => x.id === id);
+if(!p) return;
+
+const price = Number(p.price || 0).toLocaleString('en-PH', {style:'currency', currency:'PHP'});
+const details = `
+<div class="text-center mb-3">
+<img src="${escapeHtml(p.image)}" width="200" height="200" class="rounded mb-3" alt="${escapeHtml(p.name)}" onerror="this.src='https://via.placeholder.com/200x200?text=Chicken'">
+</div>
+<h4>${escapeHtml(p.name)}</h4>
+<p><span class="detail-label">Breed:</span> ${escapeHtml(p.breed)}</p>
+<p><span class="detail-label">Age:</span> ${escapeHtml(p.age)}</p>
+<p><span class="detail-label">Category:</span> ${categoryLabel(p.category)}</p>
+<p><span class="detail-label">Price:</span> <strong>${price}</strong></p>
+<p><span class="detail-label">Availability:</span> <span class="badge ${p.availability === 'Available' ? 'bg-success text-white' : 'bg-danger text-white'}">${escapeHtml(p.availability)}</span></p>
+<p><span class="detail-label">Description:</span><br>${escapeHtml(p.description)}</p>
+`;
+
+document.getElementById('details').innerHTML = details;
+new bootstrap.Modal(document.getElementById('detailModal')).show();
+};
+
+window.editProduct = function(id){
+const p = products.find(x => x.id === id);
+if(!p) return;
+editModeId = p.id;
+
+document.getElementById('name').value = p.name;
+document.getElementById('breed').value = p.breed;
+document.getElementById('category').value = p.category;
+document.getElementById('age').value = p.age;
+document.getElementById('price').value = p.price;
+document.getElementById('availability').value = p.availability;
+document.getElementById('image').value = p.image || '';
+document.getElementById('description').value = p.description;
+document.getElementById('editId').value = p.id;
+
+resetFormBtn.style.display = 'inline-block';
+window.scrollTo({top: document.getElementById('admin').offsetTop - 100, behavior:'smooth'});
+};
+
+window.deleteProduct = function(id){
+if(!confirm('Are you sure you want to delete this chicken listing?')) return;
+products = products.filter(x => x.id !== id);
+saveProducts();
+showToast('Listing deleted successfully.');
+};
+
+chickenForm.addEventListener('submit', function(e){
+e.preventDefault();
+if(!chickenForm.checkValidity()){
+e.stopPropagation();
+chickenForm.classList.add('was-validated');
+return;
+}
+
+const entry = {
+id: editModeId ? editModeId : Date.now(),
+name: document.getElementById('name').value.trim(),
+breed: document.getElementById('breed').value.trim(),
+category: document.getElementById('category').value,
+age: document.getElementById('age').value.trim(),
+price: parseFloat(document.getElementById('price').value) || 0,
+availability: document.getElementById('availability').value,
+image: document.getElementById('image').value.trim(),
+description: document.getElementById('description').value.trim()
+};
+
+if(editModeId){
+products = products.map(p => p.id === editModeId ? entry : p);
+showToast('Chicken listing updated.');
+}else{
+products.push(entry);
+showToast('Chicken listing added.');
+}
+
+editModeId = null;
+document.getElementById('editId').value = '';
+resetForm();
+saveProducts();
+});
+
+resetFormBtn.addEventListener('click', resetForm);
+
+function resetForm(){
+chickenForm.reset();
+chickenForm.classList.remove('was-validated');
+editModeId = null;
+document.getElementById('editId').value = '';
+resetFormBtn.style.display = 'none';
+}
+
+function showToast(msg){
+document.getElementById('toastBody').textContent = msg;
+const toast = new bootstrap.Toast(document.getElementById('liveToast'));
+toast.show();
+}
+
+// Initialize
+renderProducts();
+renderAdmin();
+updateStats();
+</script>
+
+</body>
+</html>
